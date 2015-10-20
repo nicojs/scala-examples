@@ -1,20 +1,24 @@
 package classes.cases
 
+import scala.annotation.tailrec
+
 abstract class IntList {
-  def add(item: Int): IntList =  this match {
+  def add(item: Int): IntList = this match {
     case _ => new Cons(item, this)
   }
 
-  def contains(item: Int): Boolean = this match{
-    case Cons(x, xs) => x.equals(item) || xs.contains(item)
+  @tailrec
+  final def contains(item: Int): Boolean = this match {
     case Nil => false
+    case Cons(x, xs) => x == item || (xs contains item)
   }
 
-  def union (that: IntList): IntList = this match{
+  def union(that: IntList): IntList = this match {
     case Cons(x, xs) => Cons(x, xs.union(that))
     case nil => that
   }
-  def map (f: Int => Int): IntList = this match{
+
+  def map(f: Int => Int): IntList = this match {
     case Cons(x, xs) => Cons(f(x), xs.map(f))
     case nil => nil
   }
@@ -27,4 +31,5 @@ abstract class IntList {
 }
 
 case class Cons(x: Int, xs: IntList) extends IntList
+
 case object Nil extends IntList
